@@ -1,0 +1,15 @@
+.local_wsmanager_bordered {
+    border: 1px solid #ccc;
+    padding: 15px 10px;
+    margin: 10px 0 20px;
+}
+
+.local_wsmanager_webservice_functions_table .table-responsive {
+    height: 200px;
+}
+
+.local_wsmanager_webservice_row_danger,
+.local_wsmanager_webservice_row_danger td {
+    color: #691911;
+    background-color: #f4d6d2;
+}
