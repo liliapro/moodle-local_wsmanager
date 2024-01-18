@@ -53,7 +53,7 @@ define([
                 }
             }])[0]
                 .then(function (res) {
-                    jQuery('#local_wsmanager_webservice_functions_table_' + id).html(res);
+                    jQuery('#local_wsmanager_webservice_functions_table_' + webserviceid).html(res);
                 });
         },
         init: function (sep1, sep2, sep3, sep4) {

@@ -24,7 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2023120300; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version = 2024011801; // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires = 2022041900; // Requires 4.0.0 Moodle version.
-$plugin->release = '1.0.0 (Build: 2023120300)';
+$plugin->release = '1.0.6 (Build: 2024011801)';
 $plugin->component = 'local_wsmanager'; // Full name of the plugin (used for diagnostics).
+$plugin->maturity = MATURITY_STABLE;

@@ -645,8 +645,10 @@ class external extends external_api {
         $params = self::validate_parameters(self::webservice_function_add_parameters(),
             ['functionid' => $functionid, 'webserviceid' => $webserviceid]);
         if ($function = $webserviceobj->get_external_function_by_id($params['functionid'])) {
-            $webserviceobj->add_external_function_to_service($function->name, $params['webserviceid']);
-            return true;
+            if (!$webserviceobj->service_function_exists($function->name, $params['webserviceid'])) {
+                $webserviceobj->add_external_function_to_service($function->name, $params['webserviceid']);
+                return true;
+            }
         }
         return false;
     }
