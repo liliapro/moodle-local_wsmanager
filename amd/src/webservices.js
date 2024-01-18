@@ -308,7 +308,7 @@ define([
                         jQuery.each(formData, function (i, item) {
                             if (item.name) {
                                 switch (item.name) {
-                                    case 'fids[]':
+                                    case 'fids_' + webserviceid + '[]':
                                         fids.push(parseInt(item.value));
                                         break;
                                 }

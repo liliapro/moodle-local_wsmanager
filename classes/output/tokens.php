@@ -44,7 +44,6 @@ class tokens implements \renderable, \templatable {
 
     public static function table(\stdClass $webservice, array $tokens): string {
         global $CFG, $DB, $USER;
-        $ret = '';
         $table = \local_wsmanager::make_table();
         $table->head = [
             'token' => get_string('token', 'webservice'),
@@ -107,14 +106,17 @@ class tokens implements \renderable, \templatable {
         }
         $tokenmanagementcell1 = new \html_table_cell();
         $tokenmanagementcell1->colspan = $showalltokens ? 5 : 4;
-        $tokenmanagementcell1->text = \html_writer::link('javascript:;', get_string('add') . ' ' .
-            get_string('token', 'webservice'),
-            [
-                'class' => 'btn btn-primary local_wsmanager_webservice_token_create_form_button',
-                'id' => 'local_wsmanager_webservice_token_create_form_button_' . $webservice->id,
-                'data-webserviceid' => $webservice->id,
-                'title' => get_string('token', 'webservice'),
-            ]);
+        $tokenmanagementcell1->text = '';
+        if (\local_wsmanager::can_create_token((array) $webservice, $USER->id)) {
+            $tokenmanagementcell1->text = \html_writer::link('javascript:;', get_string('add') . ' ' .
+                get_string('token', 'webservice'),
+                [
+                    'class' => 'btn btn-primary local_wsmanager_webservice_token_create_form_button',
+                    'id' => 'local_wsmanager_webservice_token_create_form_button_' . $webservice->id,
+                    'data-webserviceid' => $webservice->id,
+                    'title' => get_string('token', 'webservice'),
+                ]);
+        }
         $tokenmanagementcell2 = new \html_table_cell(\html_writer::link('/' . $CFG->admin .
             '/webservice/tokens.php', get_string('settings')));
         $table->data[] = new \html_table_row([$tokenmanagementcell1, $tokenmanagementcell2]);

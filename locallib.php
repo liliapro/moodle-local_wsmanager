@@ -192,7 +192,7 @@ class local_wsmanager {
      *
      * @param int $webserviceid Webservice id
      * @param string $functionname Function name
-     * @param string $token Webservice token
+     * @param string|null $token Webservice token
      * @param array|null $params Given function params
      * @param string $protocol Request protocol rest|soap
      * @param string $restformat REST request format xml|json
@@ -214,7 +214,9 @@ class local_wsmanager {
         $ret['params']['wsfunction'] = $functionname;
         if ($values = self::function_params_data_values($params, $webserviceid, $functionname)) {
             foreach ($values as $key => $value) {
-                $ret['params'][$key] = $value;
+                if (!empty($value)) {
+                    $ret['params'][$key] = $value;
+                }
             }
         }
         switch ($protocol) {
@@ -384,7 +386,7 @@ class local_wsmanager {
      *
      * @param bool $fix
      * @return string|null
-     * @throws coding_exception
+     * @throws coding_exception|moodle_exception
      */
     public static function webservice_dashboard_info_output(bool $fix = true): ?string {
         global $CFG, $OUTPUT;
@@ -555,6 +557,27 @@ class local_wsmanager {
         return true;
     }
 
+    public static function can_create_token(array $webservice, int $userid): bool {
+        global $CFG;
+        $isofficialmobilewebservice = $webservice['shortname'] == MOODLE_OFFICIAL_MOBILE_SERVICE;
+        $context = \context_system::instance();
+        if (
+            ($isofficialmobilewebservice && has_capability('moodle/webservice:createmobiletoken', $context)) ||
+            (!is_siteadmin($userid) && has_capability('moodle/webservice:createtoken', $context)) || is_siteadmin($userid)
+        ) {
+            if (!empty($webservice['restrictedusers'])) {
+                require_once($CFG->dirroot . '/webservice/lib.php');
+                $webserviceobj = new \webservice();
+                $restricteduser = $webserviceobj->get_ws_authorised_user($webservice['id'], $userid);
+                if (empty($restricteduser)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Get webservice/user tokens
      *
@@ -633,33 +656,6 @@ class local_wsmanager {
     }
 
     /**
-     * Get all tokens for external function
-     *
-     * @param string $functionname External function name
-     * @param array|null $webservices
-     * @return array
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public static function get_tokens_by_functionname(string $functionname, ?array $webservices = null): array {
-        $ret = [];
-        $webservices = $webservices ?: self::get_webservices_by_functionname($functionname);
-        if ($webservices) {
-            foreach ($webservices as $webservice) {
-                if ($tokens = self::get_tokens($webservice->id)) {
-                    foreach ($tokens as $token) {
-                        $token->webserviceid = $webservice->id;
-                        $token->webservicename = $webservice->name;
-                        $token->webserviceshortname = $webservice->shortname;
-                        $ret[$token->id] = $token;
-                    }
-                }
-            }
-        }
-        return $ret;
-    }
-
-    /**
      * Get webservice user token
      *
      * @param int $wsid Webservice id
@@ -698,11 +694,7 @@ class local_wsmanager {
             $userid = $USER->id;
         }
         $context = \context_system::instance();
-        $isofficialmobilewebservice = $webservice['shortname'] == MOODLE_OFFICIAL_MOBILE_SERVICE;
-        if (
-            ($isofficialmobilewebservice && has_capability('moodle/webservice:createmobiletoken', $context)) ||
-            (!is_siteadmin($USER) && has_capability('moodle/webservice:createtoken', $context)) || is_siteadmin($USER)
-        ) {
+        if (self::can_create_token($webservice, $userid)) {
             $newtoken = new \stdClass();
             $newtoken->token = md5(uniqid(rand(), 1));
             $newtoken->privatetoken = random_string(64);

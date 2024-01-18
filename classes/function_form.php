@@ -48,9 +48,9 @@ class function_form extends \external_service_functions_form {
             }
         }
 
-        $mform->addElement('searchableselector', 'fids', get_string('name'),
+        $mform->addElement('searchableselector', 'fids_' . $data['id'], get_string('name'),
             $functions, ['multiple']);
-        $mform->addRule('fids', get_string('required'), 'required', null, 'client');
+        $mform->addRule('fids_' . $data['id'], get_string('required'), 'required', null, 'client');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
