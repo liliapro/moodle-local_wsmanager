@@ -46,8 +46,6 @@ class local_wsmanager {
 
     const PROTOCOL_SOAP = 'soap';
 
-    const PROTOCOLS = [self::PROTOCOL_REST, self::PROTOCOL_SOAP];
-
     const PROTOCOL_DEFAULT = 'rest';
 
     const FORMAT_XML = 'xml';
@@ -328,10 +326,8 @@ class local_wsmanager {
             }
             foreach ($aprotocols as $protocol) {
                 $protocol = trim($protocol);
-                if (in_array($protocol, self::PROTOCOLS)) {
-                    if (isset($protocols[$protocol])) {
-                        $ret[$protocol] = $protocols[$protocol]['title'];
-                    }
+                if (isset($protocols[$protocol])) {
+                    $ret[$protocol] = $protocols[$protocol]['title'];
                 }
             }
         }
@@ -557,6 +553,15 @@ class local_wsmanager {
         return true;
     }
 
+    /**
+     * Check for user can create token
+     *
+     * @param array $webservice
+     * @param int $userid
+     * @return bool
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public static function can_create_token(array $webservice, int $userid): bool {
         global $CFG;
         $isofficialmobilewebservice = $webservice['shortname'] == MOODLE_OFFICIAL_MOBILE_SERVICE;
@@ -919,25 +924,6 @@ class local_wsmanager {
             }
         }
         return $ws;
-    }
-
-    /**
-     * Get web services that uses the function
-     *
-     * @param string $functionname External function name
-     * @return array
-     * @throws dml_exception
-     */
-    public static function get_webservices_by_functionname(string $functionname): array {
-        global $DB;
-        $ret = [];
-        if ($sfunctions = $DB->get_records('external_services_functions', ['functionname' => $functionname])) {
-            foreach ($sfunctions as $sfunction) {
-                $ret[$sfunction->externalserviceid] = $DB->get_record('external_services',
-                    ['id' => $sfunction->externalserviceid]);
-            }
-        }
-        return $ret;
     }
 
     /**
