@@ -33,15 +33,15 @@ $string['request'] = 'Request';
 $string['fixit'] = 'Fix it';
 $string['testing'] = 'Testing';
 $string['test'] = 'Test';
-$string['webservice_test'] = 'Test Web Service';
+$string['webservice_test'] = 'Test web service';
 $string['function_test'] = 'Test function';
-$string['webservice_test_create'] = 'Create Test Web Service';
-$string['webservice_test_delete'] = 'Delete Test Web Service';
-$string['response_format'] = 'Response Format';
+$string['webservice_test_create'] = 'Create test web service';
+$string['webservice_test_delete'] = 'Delete test web service';
+$string['response_format'] = 'Response format';
 $string['updated'] = 'Updated';
 
-$string['webservices_disable'] = 'Disable Web Services';
-$string['webservices_protocol_disable'] = 'Disable Web Service Protocol';
+$string['webservices_disable'] = 'Disable web services';
+$string['webservices_protocol_disable'] = 'Disable web service protocol';
 
 $string['errorwsdisabled'] = 'Web services disabled';
 $string['errorwsdisabled_help'] = 'Web services must be enabled';
@@ -53,7 +53,7 @@ $string['soapprotocol'] = 'SOAP protocol';
 $string['soapprotocol_help'] =
     '<strong>The Moodle SOAP server is based on the Zend SOAP server (itself based on the PHP SOAP server). Zend publishes a <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">Zend SOAP client</a>. Returns <code>XML</code> values</strong><br />SOAP (formerly an acronym for Simple Object Access Protocol) is a messaging protocol specification for exchanging structured information in the implementation of web services. It uses XML Information Set for its message format, and relies on application layer protocols, most often Hypertext Transfer Protocol (HTTP).';
 
-$string['webservicesready'] = 'Web Services are ready to go';
+$string['webservicesready'] = 'Web services are ready to go';
 
 $string['statusenabled'] = 'Enabled';
 $string['statusdisabled'] = 'Disabled';
@@ -61,4 +61,4 @@ $string['statuserror'] = 'Disabled';
 
 $string['toolong'] = 'Field value is too long; it should contain {$a} letters or less.';
 
-$string['privacy:metadata'] = 'Web Services manager plugin does not store any personal data.';
+$string['privacy:metadata'] = 'Web services manager plugin does not store any personal data.';

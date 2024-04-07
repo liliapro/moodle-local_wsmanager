@@ -28,13 +28,20 @@ use local_wsmanager as wsmanager;
 
 class local_wsmanager_dashboard_setting extends \admin_setting {
     public function __construct() {
-        global $PAGE;
+        global $CFG, $PAGE;
         if (!empty($_GET['section']) && $_GET['section'] == wsmanager::DASHBOARD_PAGE) {
-            wsmanager::js_strings();
-            $PAGE->requires->js_call_amd('local_wsmanager/base', 'init',
-                [wsmanager::SEPARATOR_1, wsmanager::SEPARATOR_2, wsmanager::SEPARATOR_3, wsmanager::SEPARATOR_4]);
-            $PAGE->requires->js_call_amd('local_wsmanager/dashboard', 'init',
-                [wsmanager::SEPARATOR_1, wsmanager::SEPARATOR_2, wsmanager::SEPARATOR_3, wsmanager::SEPARATOR_4]);
+            if ($CFG->branch >= 32) {
+                if ($CFG->branch < 39) {
+                    // in future will be support for Moodle <4.0
+                }
+                if ($CFG->branch >= 39) {
+                    wsmanager::js_strings();
+                    $PAGE->requires->js_call_amd('local_wsmanager/base_mdl39', 'init',
+                        [wsmanager::SEPARATOR_1, wsmanager::SEPARATOR_2, wsmanager::SEPARATOR_3, wsmanager::SEPARATOR_4]);
+                    $PAGE->requires->js_call_amd('local_wsmanager/dashboard_mdl39', 'init',
+                        [wsmanager::SEPARATOR_1, wsmanager::SEPARATOR_2, wsmanager::SEPARATOR_3, wsmanager::SEPARATOR_4]);
+                }
+            }
         }
         $this->name = 'local_wsmanager';
         $this->nosave = true;

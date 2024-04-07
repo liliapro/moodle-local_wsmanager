@@ -249,7 +249,9 @@ class webservices implements \renderable, \templatable {
             if (!$data = $mform->get_data()) {
                 $ajax['errors'] = $mform->validation($data, null);
             } else {
-                $ajax['success'] = true;
+                if (!empty($data['sesskey']) && confirm_sesskey($data['sesskey'])) {
+                    $ajax['success'] = true;
+                }
             }
             echo json_encode($ajax);
             die;

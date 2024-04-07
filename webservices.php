@@ -17,9 +17,9 @@
 /**
  * Prints webservices main page.
  *
+ * @package     local_wsmanager
  * @copyright   2023 Lilia Smirnova <lilia.pro@protonmail.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License
- * @package     local_wsmanager
  */
 
 require_once(__DIR__ . '/../../config.php');
@@ -36,11 +36,18 @@ admin_externalpage_setup('local_wsmanager_webservices', '', null,
 global $OUTPUT, $PAGE;
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_heading(get_string('webservices', 'webservice'));
-wsmanager::js_strings();
-$PAGE->requires->js_call_amd('local_wsmanager/base', 'init',
-    [wsmanager::SEPARATOR_1, wsmanager::SEPARATOR_2, wsmanager::SEPARATOR_3, wsmanager::SEPARATOR_4]);
-$PAGE->requires->js_call_amd('local_wsmanager/webservices', 'init',
-    [wsmanager::SEPARATOR_1, wsmanager::SEPARATOR_2, wsmanager::SEPARATOR_3, wsmanager::SEPARATOR_4]);
+if ($CFG->branch >= 32) {
+    if ($CFG->branch < 39) {
+        // in future will be support for Moodle <4.0
+    }
+    if ($CFG->branch >= 39) {
+        wsmanager::js_strings();
+        $PAGE->requires->js_call_amd('local_wsmanager/base_mdl39', 'init',
+            [wsmanager::SEPARATOR_1, wsmanager::SEPARATOR_2, wsmanager::SEPARATOR_3, wsmanager::SEPARATOR_4]);
+        $PAGE->requires->js_call_amd('local_wsmanager/webservices_mdl39', 'init',
+            [wsmanager::SEPARATOR_1, wsmanager::SEPARATOR_2, wsmanager::SEPARATOR_3, wsmanager::SEPARATOR_4]);
+    }
+}
 if (!data_submitted()) {
     echo $OUTPUT->header();
 }
