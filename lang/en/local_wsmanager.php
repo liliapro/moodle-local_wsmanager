@@ -52,7 +52,6 @@ $string['restprotocol_help'] =
 $string['soapprotocol'] = 'SOAP protocol';
 $string['soapprotocol_help'] =
     '<strong>The Moodle SOAP server is based on the Zend SOAP server (itself based on the PHP SOAP server). Zend publishes a <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">Zend SOAP client</a>. Returns <code>XML</code> values</strong><br />SOAP (formerly an acronym for Simple Object Access Protocol) is a messaging protocol specification for exchanging structured information in the implementation of web services. It uses XML Information Set for its message format, and relies on application layer protocols, most often Hypertext Transfer Protocol (HTTP).';
-
 $string['webservicesready'] = 'Web services are ready to go';
 
 $string['statusenabled'] = 'Enabled';
@@ -60,5 +59,6 @@ $string['statusdisabled'] = 'Disabled';
 $string['statuserror'] = 'Disabled';
 
 $string['toolong'] = 'Field value is too long; it should contain {$a} letters or less.';
+$string['deletetoken'] = 'Delete token';
 
 $string['privacy:metadata'] = 'Web services manager plugin does not store any personal data.';

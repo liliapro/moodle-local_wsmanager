@@ -27,10 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 function xmldb_local_wsmanager_uninstall() {
     global $CFG;
-    require_once($CFG->dirroot . '/webservice/lib.php');
-    require_once($CFG->dirroot . '/local/wsmanager/locallib.php');
-    $webservice = new \webservice();
-    if ($service = $webservice->get_external_service_by_shortname(\local_wsmanager::WS_TEST_SHORTNAME)) {
+    require_once($CFG->dirroot.'/webservice/lib.php');
+    require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
+    $webservice = new webservice();
+    if ($service = $webservice->get_external_service_by_shortname(local_wsmanager::WS_TEST_SHORTNAME)) {
         $webservice->delete_service($service->id);
     }
     return true;

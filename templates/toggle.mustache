@@ -1,0 +1,58 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_wsmanager/toggle
+
+    Template for toggle element compatible with core/toggle
+
+    Example context (json):
+    {
+        "id": "webservice-toggle-1",
+        "checked": true,
+        "disabled": false,
+        "dataattributes": [{
+            "name": "action",
+            "value": "toggle-webservice"
+        }],
+        "title": "Enable/disable webservice",
+        "label": "Enable webservice",
+        "labelclasses": "visually-hidden",
+        "name": "webservice_enabled",
+        "value": "1"
+    }
+}}
+<div class="form-check form-switch">
+    <input class="form-check-input"
+           type="checkbox"
+           role="switch"
+           id="{{id}}"
+           {{#name}}name="{{name}}"{{/name}}
+        {{#value}}value="{{value}}"{{/value}}
+        {{#checked}}checked{{/checked}}
+        {{#disabled}}disabled{{/disabled}}
+        {{#title}}title="{{title}}"{{/title}}
+        {{#dataattributes}}
+           data-{{name}}="{{value}}"
+        {{/dataattributes}}
+        {{#checked}}aria-checked="true"{{/checked}}
+        {{^checked}}aria-checked="false"{{/checked}}>
+    <label class="form-check-label {{labelclasses}}" for="{{id}}">
+        {{$labelmarkup}}
+            {{$label}}{{label}}{{/label}}
+        {{/labelmarkup}}
+    </label>
+</div>

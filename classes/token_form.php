@@ -26,11 +26,13 @@ namespace local_wsmanager;
 
 defined('MOODLE_INTERNAL') || die();
 
+use context_system;
 use core_user;
+use moodleform;
 
-require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->libdir.'/formslib.php');
 
-class token_form extends \moodleform {
+class token_form extends moodleform {
 
     /**
      * Defines the form fields.
@@ -45,15 +47,15 @@ class token_form extends \moodleform {
 
         // User selector.
         $attributes = [
-            'id' => 'local_wsmanager_webservice_token_create_user_' . $data['webserviceid'],
+            'id' => 'local_wsmanager_webservice_token_create_user_'.$data['webserviceid'],
             'multiple' => false,
             'ajax' => 'core_user/form_user_selector',
             'valuehtmlcallback' => function($userid) {
                 global $OUTPUT;
 
-                $context = \context_system::instance();
+                $context = context_system::instance();
                 $fields = core_user\fields::for_name()->with_identity($context, false);
-                $record = core_user::get_user($userid, 'id ' . $fields->get_sql()->selects, MUST_EXIST);
+                $record = core_user::get_user($userid, 'id '.$fields->get_sql()->selects, MUST_EXIST);
 
                 $user = (object) [
                     'id' => $record->id,
@@ -76,7 +78,7 @@ class token_form extends \moodleform {
         $mform->addRule('user', get_string('required'), 'required', null, 'client');
 
         $mform->addElement('text', 'iprestriction', get_string('iprestriction', 'webservice'),
-            ['id' => 'local_wsmanager_webservice_token_create_iprestriction_' . $data['webserviceid']]);
+            ['id' => 'local_wsmanager_webservice_token_create_iprestriction_'.$data['webserviceid']]);
         $mform->setType('iprestriction', PARAM_RAW_TRIMMED);
 
         $mform->addElement('date_selector', 'validuntil',
@@ -94,8 +96,8 @@ class token_form extends \moodleform {
     /**
      * Validate the submitted data.
      *
-     * @param array $data Submitted data.
-     * @param array $files Submitted files.
+     * @param  array  $data  Submitted data.
+     * @param  array  $files  Submitted files.
      * @return array Validation errors.
      */
     public function validation($data, $files) {
@@ -105,7 +107,7 @@ class token_form extends \moodleform {
 
         if (!empty($data['user']) && $data['user'] !== 'NaN') {
             if ($DB->get_field('user', 'suspended', ['id' => $data['user']], MUST_EXIST)) {
-                $errors['user'] = get_string('suspended', 'core') . ' - ' . get_string('forbiddenwsuser', 'core_webservice');
+                $errors['user'] = get_string('suspended', 'core').' - '.get_string('forbiddenwsuser', 'core_webservice');
             }
         } else {
             $errors['user'] = get_string('statusunknown', 'core');

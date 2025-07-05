@@ -24,14 +24,18 @@
 
 namespace local_wsmanager;
 
+use context_system;
+use external_service_form;
+use stdClass;
+
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/' . $CFG->admin . '/webservice/forms.php');
+require_once($CFG->dirroot.'/'.$CFG->admin.'/webservice/forms.php');
 
-class webservice_form extends \external_service_form {
+class webservice_form extends external_service_form {
     public function definition() {
         $mform = $this->_form;
-        $service = isset($this->_customdata) ? $this->_customdata : new \stdClass();
+        $service = isset($this->_customdata) ? $this->_customdata : new stdClass();
 
         $mform->addElement('text', 'name', get_string('name'));
         $mform->addRule('name', get_string('required'), 'required', null, 'client');
@@ -66,13 +70,13 @@ class webservice_form extends \external_service_form {
             $currentcapabilityexist = true;
         }
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = context_system::instance();
         $allcapabilities = $systemcontext->get_capabilities();
         $capabilitychoices = [];
         $capabilitychoices[''] = get_string('norequiredcapability', 'webservice');
         foreach ($allcapabilities as $cap) {
-            $capabilitychoices[$cap->name] = $cap->name . ': '
-                . get_capability_string($cap->name);
+            $capabilitychoices[$cap->name] = $cap->name.': '
+                .get_capability_string($cap->name);
             if (!empty($service->requiredcapability)
                 && $service->requiredcapability == $cap->name) {
                 $currentcapabilityexist = true;

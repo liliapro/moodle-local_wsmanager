@@ -24,33 +24,38 @@
 
 namespace local_wsmanager;
 
+use external_api;
+use external_service_functions_form;
+use webservice;
+
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/' . $CFG->admin . '/webservice/forms.php');
+require_once($CFG->libdir.'/externallib.php');
+require_once($CFG->dirroot.'/'.$CFG->admin.'/webservice/forms.php');
 
-class function_form extends \external_service_functions_form {
+class function_form extends external_service_functions_form {
     public function definition() {
         global $CFG;
 
         $mform = $this->_form;
         $data = $this->_customdata;
 
-        require_once($CFG->dirroot . '/webservice/lib.php');
-        $webservicemanager = new \webservice();
+        require_once($CFG->dirroot.'/webservice/lib.php');
+        $webservicemanager = new webservice();
         $functions = $webservicemanager->get_not_associated_external_functions($data['id']);
 
         foreach ($functions as $functionid => $functionname) {
-            $function = \core_external\external_api::external_function_info($functionname);
+            $function = external_api::external_function_info($functionname);
             if (empty($function->deprecated)) {
-                $functions[$functionid] = $function->name . ':' . $function->description;
+                $functions[$functionid] = $function->name.':'.$function->description;
             } else {
                 unset($functions[$functionid]);
             }
         }
 
-        $mform->addElement('searchableselector', 'fids_' . $data['id'], get_string('name'),
+        $mform->addElement('searchableselector', 'fids_'.$data['id'], get_string('name'),
             $functions, ['multiple']);
-        $mform->addRule('fids_' . $data['id'], get_string('required'), 'required', null, 'client');
+        $mform->addRule('fids_'.$data['id'], get_string('required'), 'required', null, 'client');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

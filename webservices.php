@@ -22,19 +22,20 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
-require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__.'/../../config.php');
 
 defined('MOODLE_INTERNAL') || die();
 
 use local_wsmanager as wsmanager;
+use local_wsmanager\output\webservices;
 
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/wsmanager/classes/output/webservices.php');
+require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->dirroot.'/local/wsmanager/classes/output/webservices.php');
 
 admin_externalpage_setup('local_wsmanager_webservices', '', null,
     '/local/wsmanager/webservices.php');
 global $OUTPUT, $PAGE;
-$PAGE->set_context(\context_system::instance());
+$PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('webservices', 'webservice'));
 if ($CFG->branch >= 32) {
     if ($CFG->branch < 39) {
@@ -51,9 +52,9 @@ if ($CFG->branch >= 32) {
 if (!data_submitted()) {
     echo $OUTPUT->header();
 }
-$renderable = new \local_wsmanager\output\webservices();
+$renderable = new webservices();
 echo $OUTPUT->render($renderable);
-echo \html_writer::empty_tag('input', ['type' => 'hidden', 'value' => $PAGE->url, 'id' => 'local_wsmanager_url']);
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'value' => $PAGE->url, 'id' => 'local_wsmanager_url']);
 if (!data_submitted()) {
     echo $OUTPUT->footer();
 }

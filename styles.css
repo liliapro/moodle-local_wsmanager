@@ -13,3 +13,139 @@
     color: #691911;
     background-color: #f4d6d2;
 }
+
+/* Toggle Switch Styles - Compatible with Moodle 3.1+ and core/toggle */
+
+/* Modern Moodle (4.0+) - Bootstrap 5 classes */
+.form-check.form-switch {
+    padding-left: 2.5em;
+    min-height: 1.5rem;
+}
+
+.form-check.form-switch .form-check-input {
+    width: 2em;
+    margin-left: -2.5em;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 2em;
+    transition: background-position .15s ease-in-out;
+}
+
+.form-check.form-switch .form-check-input:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+.form-check.form-switch .form-check-input:checked {
+    background-position: right center;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+/* Legacy Moodle (3.1-3.11) - Bootstrap 4 fallback */
+.custom-control.custom-switch {
+    padding-left: 2.25rem;
+    position: relative;
+    display: inline-block;
+    min-height: 1.5rem;
+}
+
+.custom-control.custom-switch .custom-control-label {
+    position: relative;
+    margin-bottom: 0;
+    vertical-align: top;
+}
+
+.custom-control.custom-switch .custom-control-label::before {
+    left: -2.25rem;
+    width: 1.75rem;
+    pointer-events: all;
+    border-radius: 0.5rem;
+    background-color: #adb5bd;
+    border: 1px solid rgba(0, 0, 0, .25);
+    transition: background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.custom-control.custom-switch .custom-control-label::after {
+    top: calc(0.25rem + 2px);
+    left: calc(-2.25rem + 2px);
+    width: calc(1rem - 4px);
+    height: calc(1rem - 4px);
+    background-color: #fff;
+    border-radius: 0.5rem;
+    transition: background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, transform .15s ease-in-out;
+}
+
+.custom-control.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.custom-control.custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+    background-color: #fff;
+    transform: translateX(0.75rem);
+}
+
+/* Accessibility - visually-hidden class for all versions */
+.visually-hidden,
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Fallback for very old Moodle versions */
+.local-wsmanager-toggle {
+    display: inline-block;
+    position: relative;
+    margin: 0 5px;
+}
+
+.local-wsmanager-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.local-wsmanager-toggle label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+}
+
+.local-wsmanager-toggle .toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 12px;
+    transition: background-color 0.3s;
+    margin-right: 8px;
+}
+
+.local-wsmanager-toggle .toggle-switch::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.local-wsmanager-toggle input:checked + label .toggle-switch {
+    background-color: #4CAF50;
+}
+
+.local-wsmanager-toggle input:checked + label .toggle-switch::before {
+    transform: translateX(26px);
+}

@@ -23,21 +23,21 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/webservice/lib.php');
-require_once($CFG->dirroot . '/local/wsmanager/classes/check/result.php');
-require_once($CFG->dirroot . '/local/wsmanager/locallib.php');
-require_once($CFG->dirroot . '/local/wsmanager/dashboard_setting.php');
+require_once($CFG->dirroot.'/webservice/lib.php');
+require_once($CFG->dirroot.'/local/wsmanager/classes/check/result.php');
+require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
+require_once($CFG->dirroot.'/local/wsmanager/dashboard_setting.php');
 
 if ($hassiteconfig) {
-    $ADMIN->add('server', new \admin_category('local_wsmanager',
+    $ADMIN->add('server', new admin_category('local_wsmanager',
         new lang_string('pluginname', 'local_wsmanager')));
 
-    $temp = new \admin_settingpage(\local_wsmanager::DASHBOARD_PAGE,
+    $temp = new admin_settingpage(local_wsmanager::DASHBOARD_PAGE,
         new lang_string('dashboard', 'local_wsmanager'));
-    $temp->add(new \local_wsmanager_dashboard_setting());
+    $temp->add(new local_wsmanager_dashboard_setting());
     $ADMIN->add('local_wsmanager', $temp);
 
-    $ADMIN->add('local_wsmanager', new \admin_externalpage('local_wsmanager_webservices',
+    $ADMIN->add('local_wsmanager', new admin_externalpage('local_wsmanager_webservices',
         new lang_string('webservices', 'webservice'),
-        new \moodle_url('/local/wsmanager/webservices.php')));
+        new moodle_url('/local/wsmanager/webservices.php')));
 }

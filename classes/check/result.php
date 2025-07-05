@@ -24,14 +24,16 @@
 
 namespace local_wsmanager\check;
 
+use renderer_base;
+
 class result extends \core\check\result {
     const ENABLED = 'enabled';
 
     const DISABLED = 'disabled';
 
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         return [
-            'status' => clean_text(get_string('status' . $this->status,
+            'status' => clean_text(get_string('status'.$this->status,
                 in_array($this->status, [self::ENABLED, self::DISABLED, self::ERROR]) ? 'local_wsmanager' : '')),
             'isok' => $this->status === self::ENABLED,
             'iswarning' => $this->status === self::DISABLED,

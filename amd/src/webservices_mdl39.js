@@ -250,8 +250,8 @@ export const init = (sep1, sep2, sep3, sep4) => {
             if (tokenid) {
                 ModalFactory.create({
                     type: ModalFactory.types.SAVE_CANCEL,
-                    title: M.str.webservice.deletetoken,
-                    body: M.str.webservice.deletetoken + ' <strong>' + token + '</strong><br />' +
+                    title: M.str.local_wsmanager.deletetoken,
+                    body: M.str.local_wsmanager.deletetoken + ' <strong>' + token + '</strong><br />' +
                         M.str.moodle.areyousure
                 }).then(function (modal) {
                     modal.setButtonText('save', M.str.moodle.delete);

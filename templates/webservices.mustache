@@ -23,7 +23,7 @@
                 <a href="{{ globals.config.wwwroot }}/{{ admin }}/settings.php?section=local_wsmanager_dashboard"
                    class="btn btn-link" title="{{#str}} dashboard, local_wsmanager {{/str}}">{{#pix}}
                     i/home, core {{/pix}} {{#str}} dashboard, local_wsmanager {{/str}}</a>
-                <a href="javascript:;" class="btn btn-link" id="local_wsmanager_create_webservice_form_show"
+                <a href="javascript:" class="btn btn-link" id="local_wsmanager_create_webservice_form_show"
                    title="{{#str}} addaservice, webservice {{/str}}">{{#pix}}
                     t/add, core {{/pix}} {{#str}} addaservice, webservice {{/str}}</a>
             </div>
@@ -36,7 +36,7 @@
                                 {{#items}}
                                     <div class="mb-2">
                                         <strong>
-                                            <a href="javascript:;"
+                                            <a href="javascript:"
                                                class="nav-link local_wsmanager_tab_link{{#active}} active{{/active}}"
                                                data-webserviceid="{{ webserviceid }}"
                                                title="{{ name }}{{^enabled}} [{{#str}} off, mnet {{/str}}]{{/enabled}}">

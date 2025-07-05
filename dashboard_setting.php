@@ -25,8 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 use local_wsmanager as wsmanager;
+use local_wsmanager\output\dashboard;
 
-class local_wsmanager_dashboard_setting extends \admin_setting {
+class local_wsmanager_dashboard_setting extends admin_setting {
     public function __construct() {
         global $CFG, $PAGE;
         if (!empty($_GET['section']) && $_GET['section'] == wsmanager::DASHBOARD_PAGE) {
@@ -62,8 +63,8 @@ class local_wsmanager_dashboard_setting extends \admin_setting {
 
     public function output_html($data, $query = '') {
         global $CFG, $OUTPUT;
-        require_once($CFG->dirroot . '/local/wsmanager/classes/output/dashboard.php');
-        $renderable = new \local_wsmanager\output\dashboard();
+        require_once($CFG->dirroot.'/local/wsmanager/classes/output/dashboard.php');
+        $renderable = new dashboard();
         return $OUTPUT->render($renderable);
     }
 }

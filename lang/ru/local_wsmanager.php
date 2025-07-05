@@ -58,4 +58,7 @@ $string['statusenabled'] = 'Включено';
 $string['statusdisabled'] = 'Выключено';
 $string['statuserror'] = 'Выключено';
 
+$string['toolong'] = 'Значение поля слишком длинное; оно должно содержать не более {$a} символов.';
+$string['deletetoken'] = 'Удалить токен';
+
 $string['privacy:metadata'] = 'Плагин инструмента администрирования API Менеджер не хранит никаких персональных данных.';
