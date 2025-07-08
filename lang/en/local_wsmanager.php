@@ -52,6 +52,9 @@ $string['restprotocol_help'] =
 $string['soapprotocol'] = 'SOAP protocol';
 $string['soapprotocol_help'] =
     '<strong>The Moodle SOAP server is based on the Zend SOAP server (itself based on the PHP SOAP server). Zend publishes a <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">Zend SOAP client</a>. Returns <code>XML</code> values</strong><br />SOAP (formerly an acronym for Simple Object Access Protocol) is a messaging protocol specification for exchanging structured information in the implementation of web services. It uses XML Information Set for its message format, and relies on application layer protocols, most often Hypertext Transfer Protocol (HTTP).';
+$string['xmlrpcprotocol'] = 'XML-RPC protocol';
+$string['xmlrpcprotocol_help'] =
+    '<strong>Moodle XML-RPC server handles remote procedure calls over HTTP using XML to encode calls and responses. Returns values in <code>XML</code> format</strong><br />XML-RPC (XML Remote Procedure Call) is a remote procedure call protocol that uses XML to encode its calls and HTTP as a transport mechanism. XML-RPC is designed to be as simple as possible, while allowing complex data structures to be transmitted, processed and returned.';
 $string['webservicesready'] = 'Web services are ready to go';
 
 $string['statusenabled'] = 'Enabled';
@@ -62,3 +65,14 @@ $string['toolong'] = 'Field value is too long; it should contain {$a} letters or
 $string['deletetoken'] = 'Delete token';
 
 $string['privacy:metadata'] = 'Web services manager plugin does not store any personal data.';
+
+$string['wsmanager:manage'] = 'Manage web services';
+$string['wsmanager:manage_desc'] =
+    'Allow user to manage web services configuration, enable/disable protocols, and configure web service settings.';
+
+$string['enabled'] = 'Enabled';
+$string['disabled'] = 'Disabled';
+$string['opensinnewwindow'] = 'Opens in new window';
+$string['mobileapp'] = 'Mobile app';
+$string['displayerrorswarning_mobileapp'] =
+    'Display errors is enabled. This is not recommended for production sites as error messages can reveal sensitive information about your site.';

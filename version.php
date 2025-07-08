@@ -21,11 +21,12 @@
  * @copyright 2023 Lilia Smirnova <lilia.pro@protonmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2024040700; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires = 2021051718; // Requires 4.0.0 Moodle version.
+$plugin->version = 2025070500; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires = 2015111600; // Requires 3.0.0 Moodle version.
 $plugin->release = '1.0.12 (Build: 2024040700)';
 $plugin->component = 'local_wsmanager'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_STABLE;

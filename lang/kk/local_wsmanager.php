@@ -52,6 +52,10 @@ $string['restprotocol_help'] =
 $string['soapprotocol'] = 'SOAP хаттамасы';
 $string['soapprotocol_help'] =
     '<strong>Moodle SOAP сервері Zend SOAP серверіне негізделген (өз кезегінде PHP SOAP серверіне негізделген). Zend <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">Zend SOAP клиентін</a> жариялайды. <code>XML</code> мәндерін қайтарады</strong><br />SOAP (бұрын Simple Object Access Protocol деген аббревиатура) - веб-қызметтерді енгізуде құрылымдық ақпаратпен алмасу үшін хабарлама протоколының спецификациясы. Ол хабарлама форматы үшін XML Information Set пайдаланады және қолданба қабаты протоколдарына, көбінесе Гипермәтін Тасымалдау Протоколына (HTTP) сүйенеді.';
+$string['xmlrpcprotocol'] = 'XML-RPC протоколы';
+$string['xmlrpcprotocol_help'] =
+    '<strong>Moodle XML-RPC серверы HTTP арқылы қашықтағы процедура шақыруларын өңдейді, шақыруларды және жауаптарды кодтау үшін XML пайдаланады. <code>XML</code> форматында мәндерді қайтарады</strong><br />XML-RPC (XML Remote Procedure Call) - бұл өз шақыруларын кодтау үшін XML және тасымалдау механизмі ретінде HTTP пайдаланатын қашықтағы процедура шақыру протоколы. XML-RPC мүмкіндігінше қарапайым болуға арналған, бірақ күрделі деректер құрылымдарын тасымалдауға, өңдеуге және қайтаруға мүмкіндік береді.';
+
 $string['webservicesready'] = 'Веб-қызметтер пайдалануға дайын';
 
 $string['statusenabled'] = 'Қосылған';

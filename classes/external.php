@@ -31,32 +31,38 @@ if (!class_exists('\core_external\external_api') && !class_exists('external_api'
     require_once($CFG->libdir.'/externallib.php');
 }
 if (class_exists('\core_external\external_api')) {
-    class_alias('\core_external\external_api', 'external_api_alias');
-    class_alias('\core_external\external_function_parameters', 'external_function_parameters_alias');
-    class_alias('\core_external\external_value', 'external_value_alias');
-    class_alias('\core_external\external_single_structure', 'external_single_structure_alias');
-    class_alias('\core_external\external_multiple_structure', 'external_multiple_structure_alias');
+    class_alias('\core_external\external_api', 'external_api_alias_external');
+    class_alias('\core_external\external_function_parameters', 'external_function_parameters_alias_external');
+    class_alias('\core_external\external_value', 'external_value_alias_external');
+    class_alias('\core_external\external_single_structure', 'external_single_structure_alias_external');
+    class_alias('\core_external\external_multiple_structure', 'external_multiple_structure_alias_external');
 } else {
-    class_alias('external_api', 'external_api_alias');
-    class_alias('external_function_parameters', 'external_function_parameters_alias');
-    class_alias('external_value', 'external_value_alias');
-    class_alias('external_single_structure', 'external_single_structure_alias');
-    class_alias('external_multiple_structure', 'external_multiple_structure_alias');
+    class_alias('external_api', 'external_api_alias_external');
+    class_alias('external_function_parameters', 'external_function_parameters_alias_external');
+    class_alias('external_value', 'external_value_alias_external');
+    class_alias('external_single_structure', 'external_single_structure_alias_external');
+    class_alias('external_multiple_structure', 'external_multiple_structure_alias_external');
 }
 
+use coding_exception;
 use context_system;
 use core_text;
-use external_api_alias;
-use external_function_parameters_alias;
-use external_multiple_structure_alias;
-use external_single_structure_alias;
-use external_value_alias;
+use dml_exception;
+use external_api_alias_external as external_api;
+use external_function_parameters_alias_external as external_function_parameters;
+use external_multiple_structure_alias_external as external_multiple_structure;
+use external_single_structure_alias_external as external_single_structure;
+use external_value_alias_external as external_value;
+use invalid_parameter_exception;
 use local_wsmanager;
 use local_wsmanager\output\dashboard;
 use local_wsmanager\output\functions;
 use local_wsmanager\output\tokens;
 use local_wsmanager\output\users;
 use local_wsmanager\output\webservices;
+use moodle_exception;
+use require_login_exception;
+use required_capability_exception;
 use stdClass;
 use webservice;
 
@@ -69,28 +75,36 @@ use webservice;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-class external extends external_api_alias {
+class external extends external_api {
     public static function webservice_dashboard_info_output_parameters() {
-        return new external_function_parameters_alias([]);
+        return new external_function_parameters([]);
     }
 
     public static function webservice_dashboard_info_output() {
         global $CFG, $PAGE;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $PAGE->set_context(context_system::instance());
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         return local_wsmanager::webservice_dashboard_info_output();
     }
 
     public static function webservice_dashboard_info_output_returns() {
-        return new external_value_alias(PARAM_RAW, 'Web Services status info output');
+        return new external_value(PARAM_RAW, 'Web Services status info output');
     }
 
     public static function webservices_state_switch_parameters() {
-        return new external_function_parameters_alias([]);
+        return new external_function_parameters([]);
     }
 
     public static function webservices_state_switch() {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $ret = [
             'enabled' => (bool) $CFG->enablewebservices,
             'result' => set_config('enablewebservices', !$CFG->enablewebservices),
@@ -107,15 +121,19 @@ class external extends external_api_alias {
     }
 
     public static function webservices_state_switch_returns() {
-        return new external_single_structure_alias([
-            'enabled' => new external_value_alias(PARAM_BOOL, 'enabled'),
-            'result' => new external_value_alias(PARAM_BOOL, 'result'),
-            'active_protocols' => new external_value_alias(PARAM_BOOL, 'has active protocols'),
+        return new external_single_structure([
+            'enabled' => new external_value(PARAM_BOOL, 'enabled'),
+            'result' => new external_value(PARAM_BOOL, 'result'),
+            'active_protocols' => new external_value(PARAM_BOOL, 'has active protocols'),
         ]);
     }
 
     public static function webservice_state_switch($webserviceid, $instance) {
         global $CFG, $DB;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         $webserviceobj = new webservice();
@@ -140,14 +158,14 @@ class external extends external_api_alias {
     }
 
     public static function webservice_state_switch_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
-            'instance' => new external_value_alias(PARAM_ALPHANUMEXT, 'webservice field'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
+            'instance' => new external_value(PARAM_ALPHANUMEXT, 'webservice field'),
         ]);
     }
 
     public static function webservice_state_switch_returns() {
-        return new external_value_alias(PARAM_BOOL, 'webservice');
+        return new external_value(PARAM_BOOL, 'webservice');
     }
 
     public static function webservices_protocol_switch($protocol) {
@@ -158,21 +176,25 @@ class external extends external_api_alias {
     }
 
     public static function webservices_protocol_switch_parameters() {
-        return new external_function_parameters_alias([
-            'protocol' => new external_value_alias(PARAM_ALPHANUM, 'protocol alias'),
+        return new external_function_parameters([
+            'protocol' => new external_value(PARAM_ALPHANUM, 'protocol alias'),
         ]);
     }
 
     public static function webservices_protocol_switch_returns() {
-        return new external_single_structure_alias([
-            'enabled' => new external_value_alias(PARAM_BOOL, 'enabled'),
-            'active' => new external_value_alias(PARAM_BOOL, 'has active protocols'),
-            'result' => new external_value_alias(PARAM_BOOL, 'result'),
+        return new external_single_structure([
+            'enabled' => new external_value(PARAM_BOOL, 'enabled'),
+            'active' => new external_value(PARAM_BOOL, 'has active protocols'),
+            'result' => new external_value(PARAM_BOOL, 'result'),
         ]);
     }
 
     public static function webservice_protocol_status_output($protocol) {
         global $CFG, $PAGE;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $PAGE->set_context(context_system::instance());
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         $protocols = local_wsmanager::get_webservices_protocols();
@@ -182,17 +204,21 @@ class external extends external_api_alias {
     }
 
     public static function webservice_protocol_status_output_parameters() {
-        return new external_function_parameters_alias([
-            'protocol' => new external_value_alias(PARAM_ALPHANUM, 'protocol alias'),
+        return new external_function_parameters([
+            'protocol' => new external_value(PARAM_ALPHANUM, 'protocol alias'),
         ]);
     }
 
     public static function webservice_protocol_status_output_returns() {
-        return new external_value_alias(PARAM_RAW, 'protocol status');
+        return new external_value(PARAM_RAW, 'protocol status');
     }
 
     public static function request_info($webserviceid, $functionname, $params, $method, $protocol, $restformat, $token) {
         global $CFG, $PAGE;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $PAGE->set_context(context_system::instance());
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         $params2 = self::validate_parameters(self::request_info_parameters(), [
@@ -211,27 +237,31 @@ class external extends external_api_alias {
     }
 
     public static function request_info_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
-            'functionname' => new external_value_alias(PARAM_ALPHANUMEXT, 'function name'),
-            'params' => new external_value_alias(PARAM_RAW, 'request params'),
-            'method' => new external_value_alias(PARAM_ALPHANUM, 'method'),
-            'protocol' => new external_value_alias(PARAM_ALPHANUM, 'protocol'),
-            'restformat' => new external_value_alias(PARAM_ALPHANUM, 'REST protocol format'),
-            'token' => new external_value_alias(PARAM_ALPHANUM, 'token'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
+            'functionname' => new external_value(PARAM_ALPHANUMEXT, 'function name'),
+            'params' => new external_value(PARAM_RAW, 'request params'),
+            'method' => new external_value(PARAM_ALPHANUM, 'method'),
+            'protocol' => new external_value(PARAM_ALPHANUM, 'protocol'),
+            'restformat' => new external_value(PARAM_ALPHANUM, 'REST protocol format'),
+            'token' => new external_value(PARAM_ALPHANUM, 'token'),
         ]);
     }
 
     public static function request_info_returns() {
-        return new external_value_alias(PARAM_RAW, 'request info');
+        return new external_value(PARAM_RAW, 'request info');
     }
 
     public static function webservice_mobile_state_switch_parameters() {
-        return new external_function_parameters_alias([]);
+        return new external_function_parameters([]);
     }
 
     public static function webservice_mobile_state_switch() {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         return [
             'enabled' => (bool) $CFG->enablemobilewebservice,
             'result' => set_config('enablemobilewebservice', !$CFG->enablemobilewebservice),
@@ -239,27 +269,31 @@ class external extends external_api_alias {
     }
 
     public static function webservice_mobile_state_switch_returns() {
-        return new external_single_structure_alias([
-            'enabled' => new external_value_alias(PARAM_BOOL, 'enabled'),
-            'result' => new external_value_alias(PARAM_BOOL, 'result'),
+        return new external_single_structure([
+            'enabled' => new external_value(PARAM_BOOL, 'enabled'),
+            'result' => new external_value(PARAM_BOOL, 'result'),
         ]);
     }
 
     public static function webservice_documentation_switch_parameters() {
-        return new external_function_parameters_alias([]);
+        return new external_function_parameters([]);
     }
 
     public static function webservice_documentation_switch() {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         return set_config('enablewsdocumentation', !$CFG->enablewsdocumentation);
     }
 
     public static function webservice_documentation_switch_returns() {
-        return new external_value_alias(PARAM_BOOL, 'result');
+        return new external_value(PARAM_BOOL, 'result');
     }
 
     public static function webservice_dashboard_mobile_info_output_parameters() {
-        return new external_function_parameters_alias([]);
+        return new external_function_parameters([]);
     }
 
     public static function webservice_dashboard_mobile_info_output() {
@@ -270,45 +304,65 @@ class external extends external_api_alias {
     }
 
     public static function webservice_dashboard_mobile_info_output_returns() {
-        return new external_value_alias(PARAM_RAW, 'mobile web services status info output');
+        return new external_value(PARAM_RAW, 'mobile web services status info output');
     }
 
     public static function webservices_enable_fix_parameters() {
-        return new external_function_parameters_alias([]);
+        return new external_function_parameters([]);
     }
 
     public static function webservices_enable_fix() {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         return local_wsmanager::webservices_enable_fix();
     }
 
     public static function webservices_enable_fix_returns() {
-        return new external_single_structure_alias([
-            'enablewebservices' => new external_value_alias(PARAM_BOOL, 'enabled'),
-            'webserviceprotocols' => new external_value_alias(PARAM_BOOL, 'result'),
+        return new external_single_structure([
+            'enablewebservices' => new external_value(PARAM_BOOL, 'enabled'),
+            'webserviceprotocols' => new external_value(PARAM_BOOL, 'result'),
         ]);
     }
 
     public static function webservice_test_create_parameters() {
-        return new external_function_parameters_alias([]);
+        return new external_function_parameters([]);
     }
 
     public static function webservice_test_create() {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         return local_wsmanager::webservice_test_create();
     }
 
     public static function webservice_test_create_returns() {
-        return new external_value_alias(PARAM_BOOL, 'test webservice created');
+        return new external_value(PARAM_BOOL, 'test webservice created');
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws require_login_exception
+     * @throws moodle_exception
+     * @throws invalid_parameter_exception
+     * @throws required_capability_exception
+     */
     public static function webservice_create(
         $name, $shortname, $enabled, $restrictedusers, $downloadfiles, $uploadfiles,
         $requiredcapability
     ) {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         $webserviceobj = new webservice();
@@ -333,39 +387,43 @@ class external extends external_api_alias {
     }
 
     public static function webservice_create_parameters() {
-        return new external_function_parameters_alias([
-            'name' => new external_value_alias(PARAM_TEXT, 'webservice name'),
-            'shortname' => new external_value_alias(PARAM_TEXT, 'webservice shortname'),
-            'enabled' => new external_value_alias(PARAM_INT, 'webservice enabled'),
-            'restrictedusers' => new external_value_alias(PARAM_INT, 'webservice has restricted users'),
-            'downloadfiles' => new external_value_alias(PARAM_INT, 'webservice allows files download'),
-            'uploadfiles' => new external_value_alias(PARAM_INT, 'webservice allows files upload'),
-            'requiredcapability' => new external_value_alias(PARAM_RAW, 'webservice required capability'),
+        return new external_function_parameters([
+            'name' => new external_value(PARAM_TEXT, 'webservice name'),
+            'shortname' => new external_value(PARAM_TEXT, 'webservice shortname'),
+            'enabled' => new external_value(PARAM_INT, 'webservice enabled'),
+            'restrictedusers' => new external_value(PARAM_INT, 'webservice has restricted users'),
+            'downloadfiles' => new external_value(PARAM_INT, 'webservice allows files download'),
+            'uploadfiles' => new external_value(PARAM_INT, 'webservice allows files upload'),
+            'requiredcapability' => new external_value(PARAM_RAW, 'webservice required capability'),
         ]);
     }
 
     public static function webservice_create_returns() {
-        return new external_single_structure_alias([
-            'webservice' => new external_single_structure_alias([
-                'name' => new external_value_alias(PARAM_TEXT, 'webservice name'),
-                'enabled' => new external_value_alias(PARAM_INT, 'webservice enabled', VALUE_OPTIONAL, 1),
-                'requiredcapability' => new external_value_alias(PARAM_RAW, 'webservice required capability', VALUE_OPTIONAL),
-                'restrictedusers' => new external_value_alias(PARAM_INT, 'webservice restricted users', VALUE_OPTIONAL, 0),
-                'component' => new external_value_alias(PARAM_ALPHANUMEXT, 'webservice component', VALUE_OPTIONAL),
-                'shortname' => new external_value_alias(PARAM_TEXT, 'webservice shortname'),
-                'downloadfiles' => new external_value_alias(PARAM_INT, 'download files', VALUE_OPTIONAL, 0),
-                'uploadfiles' => new external_value_alias(PARAM_INT, 'upload files', VALUE_OPTIONAL, 0),
+        return new external_single_structure([
+            'webservice' => new external_single_structure([
+                'name' => new external_value(PARAM_TEXT, 'webservice name'),
+                'enabled' => new external_value(PARAM_INT, 'webservice enabled', VALUE_OPTIONAL, 1),
+                'requiredcapability' => new external_value(PARAM_RAW, 'webservice required capability', VALUE_OPTIONAL),
+                'restrictedusers' => new external_value(PARAM_INT, 'webservice restricted users', VALUE_OPTIONAL, 0),
+                'component' => new external_value(PARAM_ALPHANUMEXT, 'webservice component', VALUE_OPTIONAL),
+                'shortname' => new external_value(PARAM_TEXT, 'webservice shortname'),
+                'downloadfiles' => new external_value(PARAM_INT, 'download files', VALUE_OPTIONAL, 0),
+                'uploadfiles' => new external_value(PARAM_INT, 'upload files', VALUE_OPTIONAL, 0),
             ]),
-            'errors' => new external_single_structure_alias([
-                'name' => new external_value_alias(PARAM_RAW, 'name error', VALUE_OPTIONAL),
-                'shortname' => new external_value_alias(PARAM_RAW, 'shortname error', VALUE_OPTIONAL),
-                'requiredcapability' => new external_value_alias(PARAM_RAW, 'required capability error', VALUE_OPTIONAL),
+            'errors' => new external_single_structure([
+                'name' => new external_value(PARAM_RAW, 'name error', VALUE_OPTIONAL),
+                'shortname' => new external_value(PARAM_RAW, 'shortname error', VALUE_OPTIONAL),
+                'requiredcapability' => new external_value(PARAM_RAW, 'required capability error', VALUE_OPTIONAL),
             ]),
         ]);
     }
 
     public static function webservice_delete($webserviceid) {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         $webserviceobj = new webservice();
         $params = self::validate_parameters(self::webservice_delete_parameters(), ['webserviceid' => $webserviceid]);
@@ -379,13 +437,13 @@ class external extends external_api_alias {
     }
 
     public static function webservice_delete_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function webservice_delete_returns() {
-        return new external_value_alias(PARAM_BOOL, 'test webservice deleted');
+        return new external_value(PARAM_BOOL, 'test webservice deleted');
     }
 
     public static function external_function_handle(
@@ -408,19 +466,19 @@ class external extends external_api_alias {
     }
 
     public static function external_function_handle_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'Webservice id'),
-            'functionname' => new external_value_alias(PARAM_ALPHANUMEXT, 'external function name'),
-            'token' => new external_value_alias(PARAM_ALPHANUM, 'token'),
-            'params' => new external_value_alias(PARAM_RAW, 'params provided'),
-            'method' => new external_value_alias(PARAM_ALPHA, 'request method'),
-            'moodlewsprotocol' => new external_value_alias(PARAM_ALPHA, 'request protocol'),
-            'moodlewsrestformat' => new external_value_alias(PARAM_ALPHANUM, 'response format for REST protocol'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'Webservice id'),
+            'functionname' => new external_value(PARAM_ALPHANUMEXT, 'external function name'),
+            'token' => new external_value(PARAM_ALPHANUM, 'token'),
+            'params' => new external_value(PARAM_RAW, 'params provided'),
+            'method' => new external_value(PARAM_ALPHA, 'request method'),
+            'moodlewsprotocol' => new external_value(PARAM_ALPHA, 'request protocol'),
+            'moodlewsrestformat' => new external_value(PARAM_ALPHANUM, 'response format for REST protocol'),
         ]);
     }
 
     public static function external_function_handle_returns() {
-        return new external_value_alias(PARAM_RAW, 'data');
+        return new external_value(PARAM_RAW, 'data');
     }
 
     public static function external_function_test_handle($data) {
@@ -433,24 +491,28 @@ class external extends external_api_alias {
     public static function external_function_test_handle_parameters() {
         global $CFG;
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
-        return new external_function_parameters_alias([
-            'data' => new external_value_alias(PARAM_RAW, 'data to output', VALUE_REQUIRED, 'Hello World'),
+        return new external_function_parameters([
+            'data' => new external_value(PARAM_RAW, 'data to output', VALUE_REQUIRED, 'Hello World'),
         ]);
     }
 
     public static function external_function_test_handle_returns() {
-        return new external_value_alias(PARAM_RAW, 'data');
+        return new external_value(PARAM_RAW, 'data');
     }
 
     public static function function_param_output_parameters() {
-        return new external_function_parameters_alias([
-            'paramkey' => new external_value_alias(PARAM_ALPHANUMEXT, 'function name'),
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'paramkey' => new external_value(PARAM_ALPHANUMEXT, 'function name'),
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function external_function_handle_output($functionname, $webserviceid) {
         global $CFG, $PAGE;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $PAGE->set_context(context_system::instance());
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         $params = self::validate_parameters(self::external_function_handle_output_parameters(),
@@ -459,33 +521,41 @@ class external extends external_api_alias {
     }
 
     public static function external_function_handle_output_parameters() {
-        return new external_function_parameters_alias([
-            'functionname' => new external_value_alias(PARAM_ALPHANUMEXT, 'function name'),
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'functionname' => new external_value(PARAM_ALPHANUMEXT, 'function name'),
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function external_function_handle_output_returns() {
-        return new external_value_alias(PARAM_RAW, 'output data');
+        return new external_value(PARAM_RAW, 'output data');
     }
 
     public static function webservice_test_dashboard_table_output_parameters() {
-        return new external_function_parameters_alias([]);
+        return new external_function_parameters([]);
     }
 
     public static function webservice_test_dashboard_table_output() {
         global $CFG, $PAGE;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $PAGE->set_context(context_system::instance());
         require_once($CFG->dirroot.'/webservice/lib.php');
         return dashboard::webservice_test_dashboard_table_output();
     }
 
     public static function webservice_test_dashboard_table_output_returns() {
-        return new external_value_alias(PARAM_RAW, 'mobile web services status info output');
+        return new external_value(PARAM_RAW, 'mobile web services status info output');
     }
 
     public static function webservice_nav_title($webserviceid) {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         require_once($CFG->dirroot.'/local/wsmanager/classes/output/webservices.php');
         $webserviceobj = new webservice();
@@ -497,17 +567,21 @@ class external extends external_api_alias {
     }
 
     public static function webservice_nav_title_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function webservice_nav_title_returns() {
-        return new external_value_alias(PARAM_RAW, 'webservice navigation title');
+        return new external_value(PARAM_RAW, 'webservice navigation title');
     }
 
     public static function webservice_tokens_table_output($webserviceid) {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         require_once($CFG->dirroot.'/local/wsmanager/classes/output/tokens.php');
@@ -521,17 +595,21 @@ class external extends external_api_alias {
     }
 
     public static function webservice_tokens_table_output_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function webservice_tokens_table_output_returns() {
-        return new external_value_alias(PARAM_RAW, 'tokens table');
+        return new external_value(PARAM_RAW, 'tokens table');
     }
 
     public static function webservice_token_create($webserviceid, $userid, $iprestriction, $validuntil) {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
         $params = self::validate_parameters(self::webservice_token_create_parameters(), [
             'webserviceid' => $webserviceid,
@@ -556,35 +634,39 @@ class external extends external_api_alias {
     }
 
     public static function webservice_token_create_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'Webservice ID'),
-            'userid' => new external_value_alias(PARAM_INT, 'User ID'),
-            'iprestriction' => new external_value_alias(PARAM_RAW_TRIMMED, 'IP restriction'),
-            'valid_until' => new external_single_structure_alias([
-                'day' => new external_value_alias(PARAM_INT, 'valid until day', VALUE_OPTIONAL),
-                'month' => new external_value_alias(PARAM_INT, 'valid until month', VALUE_OPTIONAL),
-                'year' => new external_value_alias(PARAM_INT, 'valid until year', VALUE_OPTIONAL),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'Webservice ID'),
+            'userid' => new external_value(PARAM_INT, 'User ID'),
+            'iprestriction' => new external_value(PARAM_RAW_TRIMMED, 'IP restriction'),
+            'valid_until' => new external_single_structure([
+                'day' => new external_value(PARAM_INT, 'valid until day', VALUE_OPTIONAL),
+                'month' => new external_value(PARAM_INT, 'valid until month', VALUE_OPTIONAL),
+                'year' => new external_value(PARAM_INT, 'valid until year', VALUE_OPTIONAL),
             ], 'valid until', VALUE_OPTIONAL),
         ]);
     }
 
     public static function webservice_token_create_returns() {
-        return new external_single_structure_alias([
-            'id' => new external_value_alias(PARAM_INT, 'token id'),
-            'errors' => new external_multiple_structure_alias(
-                new external_value_alias(PARAM_RAW, 'error message')
+        return new external_single_structure([
+            'id' => new external_value(PARAM_INT, 'token id'),
+            'errors' => new external_multiple_structure(
+                new external_value(PARAM_RAW, 'error message')
             ),
         ]);
     }
 
     public static function webservice_token_delete_parameters() {
-        return new external_function_parameters_alias([
-            'tokenid' => new external_value_alias(PARAM_INT, 'token id'),
+        return new external_function_parameters([
+            'tokenid' => new external_value(PARAM_INT, 'token id'),
         ]);
     }
 
     public static function webservice_token_delete($tokenid) {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         $webserviceobj = new webservice();
         $webserviceobj->delete_user_ws_token($tokenid);
@@ -592,11 +674,15 @@ class external extends external_api_alias {
     }
 
     public static function webservice_token_delete_returns() {
-        return new external_value_alias(PARAM_BOOL, 'token deleted');
+        return new external_value(PARAM_BOOL, 'token deleted');
     }
 
     public static function webservice_user_delete($webserviceid, $userid) {
         global $DB;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $params = self::validate_parameters(self::webservice_user_delete_parameters(),
             ['webserviceid' => $webserviceid, 'userid' => $userid]);
         return $DB->delete_records('external_services_users',
@@ -604,18 +690,22 @@ class external extends external_api_alias {
     }
 
     public static function webservice_user_delete_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
-            'userid' => new external_value_alias(PARAM_INT, 'user id'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
+            'userid' => new external_value(PARAM_INT, 'user id'),
         ]);
     }
 
     public static function webservice_user_delete_returns() {
-        return new external_value_alias(PARAM_BOOL, 'webservice user deleted');
+        return new external_value(PARAM_BOOL, 'webservice user deleted');
     }
 
     public static function webservice_users_table_output($webserviceid) {
         global $CFG, $OUTPUT, $PAGE;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $PAGE->set_context(context_system::instance());
         require_once($CFG->dirroot.'/webservice/lib.php');
         require_once($CFG->dirroot.'/local/wsmanager/classes/output/users.php');
@@ -629,17 +719,21 @@ class external extends external_api_alias {
     }
 
     public static function webservice_users_table_output_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function webservice_users_table_output_returns() {
-        return new external_value_alias(PARAM_RAW, 'webservice users table');
+        return new external_value(PARAM_RAW, 'webservice users table');
     }
 
     public static function webservice_functions_table_output($webserviceid) {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         require_once($CFG->dirroot.'/local/wsmanager/classes/output/functions.php');
         $webserviceobj = new webservice();
@@ -652,18 +746,21 @@ class external extends external_api_alias {
     }
 
     public static function webservice_functions_table_output_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function webservice_functions_table_output_returns() {
-        return new external_value_alias(PARAM_RAW, 'webservice functions table');
+        return new external_value(PARAM_RAW, 'webservice functions table');
     }
 
     public static function webservice_function_add($functionid, $webserviceid) {
         global $CFG;
 
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         $webserviceobj = new webservice();
         $params = self::validate_parameters(self::webservice_function_add_parameters(),
@@ -678,18 +775,22 @@ class external extends external_api_alias {
     }
 
     public static function webservice_function_add_parameters() {
-        return new external_function_parameters_alias([
-            'functionid' => new external_value_alias(PARAM_INT, 'function id'),
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'functionid' => new external_value(PARAM_INT, 'function id'),
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function webservice_function_add_returns() {
-        return new external_value_alias(PARAM_BOOL, 'webservice function add result');
+        return new external_value(PARAM_BOOL, 'webservice function add result');
     }
 
     public static function webservice_function_delete($functionid, $webserviceid) {
         global $CFG;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         require_once($CFG->dirroot.'/webservice/lib.php');
         $webserviceobj = new webservice();
         $params = self::validate_parameters(self::webservice_function_delete_parameters(),
@@ -702,18 +803,22 @@ class external extends external_api_alias {
     }
 
     public static function webservice_function_delete_parameters() {
-        return new external_function_parameters_alias([
-            'functionid' => new external_value_alias(PARAM_INT, 'function id'),
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
+        return new external_function_parameters([
+            'functionid' => new external_value(PARAM_INT, 'function id'),
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
         ]);
     }
 
     public static function webservice_function_delete_returns() {
-        return new external_value_alias(PARAM_BOOL, 'webservice function delete result');
+        return new external_value(PARAM_BOOL, 'webservice function delete result');
     }
 
     public static function webservice_rename($webserviceid, $name) {
         global $DB;
+
+        $context = context_system::instance();
+        require_login();
+        require_capability('local/wsmanager:manage', $context);
         $params = self::validate_parameters(self::webservice_rename_parameters(),
             ['webserviceid' => $webserviceid, 'name' => $name]);
         if (core_text::strlen($params['name']) <= 200) {
@@ -728,13 +833,13 @@ class external extends external_api_alias {
     }
 
     public static function webservice_rename_parameters() {
-        return new external_function_parameters_alias([
-            'webserviceid' => new external_value_alias(PARAM_INT, 'webservice id'),
-            'name' => new external_value_alias(PARAM_RAW, 'webservice new name'),
+        return new external_function_parameters([
+            'webserviceid' => new external_value(PARAM_INT, 'webservice id'),
+            'name' => new external_value(PARAM_RAW, 'webservice new name'),
         ]);
     }
 
     public static function webservice_rename_returns() {
-        return new external_value_alias(PARAM_BOOL, 'webservice rename result');
+        return new external_value(PARAM_BOOL, 'webservice rename result');
     }
 }

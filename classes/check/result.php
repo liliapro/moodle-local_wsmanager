@@ -26,18 +26,90 @@ namespace local_wsmanager\check;
 
 use renderer_base;
 
-class result extends \core\check\result {
-    const ENABLED = 'enabled';
+if (class_exists('\core\check\result')) {
+    class result extends \core\check\result {
+        const ENABLED = 'enabled';
+        const DISABLED = 'disabled';
+        const ERROR = 'error';
 
-    const DISABLED = 'disabled';
+        public function export_for_template(renderer_base $output) {
+            return [
+                'status' => clean_text(get_string('status'.$this->status,
+                    in_array($this->status, [self::ENABLED, self::DISABLED, self::ERROR]) ? 'local_wsmanager' : '')),
+                'isok' => $this->status === self::ENABLED,
+                'iswarning' => $this->status === self::DISABLED,
+                'iserror' => $this->status === self::ERROR,
+            ];
+        }
+    }
+} else {
+    // Для старых версий Moodle (3.0-3.7) создаем собственную реализацию
+    class result {
+        const ENABLED = 'enabled';
+        const DISABLED = 'disabled';
+        const ERROR = 'error';
+        const WARNING = 'warning';
+        const OK = 'ok';
+        const INFO = 'info';
+        const UNKNOWN = 'unknown';
 
-    public function export_for_template(renderer_base $output) {
-        return [
-            'status' => clean_text(get_string('status'.$this->status,
-                in_array($this->status, [self::ENABLED, self::DISABLED, self::ERROR]) ? 'local_wsmanager' : '')),
-            'isok' => $this->status === self::ENABLED,
-            'iswarning' => $this->status === self::DISABLED,
-            'iserror' => $this->status === self::ERROR,
-        ];
+        /** @var string */
+        protected $status;
+
+        /** @var string */
+        protected $summary;
+
+        /** @var string */
+        protected $details;
+
+        /**
+         * Constructor
+         *
+         * @param string $status
+         * @param string $summary
+         * @param string $details
+         */
+        public function __construct($status, $summary, $details = null) {
+            $this->status = $status;
+            $this->summary = $summary;
+            $this->details = $details;
+        }
+
+        /**
+         * Get status
+         *
+         * @return string
+         */
+        public function get_status() {
+            return $this->status;
+        }
+
+        /**
+         * Get summary
+         *
+         * @return string
+         */
+        public function get_summary() {
+            return $this->summary;
+        }
+
+        /**
+         * Get details
+         *
+         * @return string
+         */
+        public function get_details() {
+            return $this->details;
+        }
+
+        public function export_for_template(renderer_base $output) {
+            return [
+                'status' => clean_text(get_string('status'.$this->status,
+                    in_array($this->status, [self::ENABLED, self::DISABLED, self::ERROR]) ? 'local_wsmanager' : '')),
+                'isok' => $this->status === self::ENABLED,
+                'iswarning' => $this->status === self::DISABLED,
+                'iserror' => $this->status === self::ERROR,
+            ];
+        }
     }
 }

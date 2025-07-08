@@ -52,6 +52,9 @@ $string['restprotocol_help'] =
 $string['soapprotocol'] = 'Protokol SOAP';
 $string['soapprotocol_help'] =
     '<strong>Server Moodle SOAP je založený na serveri Zend SOAP (ktorý je sám založený na serveri PHP SOAP). Zend publikuje <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">klienta Zend SOAP</a>. Vracia hodnoty <code>XML</code></strong><br />SOAP (predtým skratka pre Simple Object Access Protocol) je špecifikácia protokolu na výmenu štruktúrovaných informácií pri implementácii webových služieb. Pre svoj formát správ používa XML Information Set a spolieha sa na protokoly aplikačnej vrstvy, najčastejšie na Hypertext Transfer Protocol (HTTP).';
+$string['xmlrpcprotocol'] = 'XML-RPC protokol';
+$string['xmlrpcprotocol_help'] =
+    '<strong>Moodle XML-RPC server spracováva vzdialené volania procedúr cez HTTP pomocou XML na kódovanie volaní a odpovedí. Vracia hodnoty vo formáte <code>XML</code></strong><br />XML-RPC (XML Remote Procedure Call) je protokol vzdialeného volania procedúr, ktorý používa XML na kódovanie svojich volaní a HTTP ako transportný mechanizmus. XML-RPC je navrhnutý tak, aby bol čo najjednoduchší, pričom umožňuje prenos, spracovanie a vrátenie zložitých dátových štruktúr.';
 $string['webservicesready'] = 'Webové služby sú pripravené na použitie';
 
 $string['statusenabled'] = 'Povolené';

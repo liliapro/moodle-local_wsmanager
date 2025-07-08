@@ -52,6 +52,9 @@ $string['restprotocol_help'] =
 $string['soapprotocol'] = 'SOAP პროტოკოლი';
 $string['soapprotocol_help'] =
     '<strong>Moodle SOAP სერვერი ეყრდნობა Zend SOAP სერვერს (რომელიც თავის მხრივ ეყრდნობა PHP SOAP სერვერს). Zend-მა გამოაქვეყნა <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">Zend SOAP კლიენტი</a>. აბრუნებს <code>XML</code> მნიშვნელობებს.</strong><br />SOAP (თავდაპირველად Simple Object Access Protocol-ის აბრევიატურა) არის შეტყობინების პროტოკოლის სპეციფიკაცია სტრუქტურირებული ინფორმაციის გაცვლისთვის ვებ-სერვისების განხორციელებაში. ის იყენებს XML Information Set-ს შეტყობინების ფორმატისთვის და ეყრდნობა აპლიკაციის ფენის პროტოკოლებს, ყველაზე ხშირად Hypertext Transfer Protocol (HTTP).';
+$string['xmlrpcprotocol'] = 'XML-RPC პროტოკოლი';
+$string['xmlrpcprotocol_help'] =
+    '<strong>Moodle-ის XML-RPC სერვერი ამუშავებს დისტანციურ პროცედურულ გამოძახებებს HTTP-ის მეშვეობით, XML-ის გამოყენებით გამოძახებების და პასუხების კოდირებისთვის. აბრუნებს მნიშვნელობებს <code>XML</code> ფორმატში</strong><br />XML-RPC (XML Remote Procedure Call) არის დისტანციური პროცედურული გამოძახების პროტოკოლი, რომელიც იყენებს XML-ს თავისი გამოძახებების კოდირებისთვის და HTTP-ს ტრანსპორტის მექანიზმად. XML-RPC შექმნილია რაც შეიძლება მარტივი იყოს, იმავდროულად საშუალებას აძლევს რთული მონაცემთა სტრუქტურების გადაცემას, დამუშავებას და დაბრუნებას.';
 $string['webservicesready'] = 'ვებ-სერვისები მზადაა';
 
 $string['statusenabled'] = 'ჩართული';

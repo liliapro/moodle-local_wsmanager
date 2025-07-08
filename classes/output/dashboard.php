@@ -27,10 +27,18 @@ namespace local_wsmanager\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+if (!class_exists('\core_external\external_api') && !class_exists('external_api')) {
+    require_once($CFG->libdir.'/externallib.php');
+}
+if (class_exists('\core_external\external_api')) {
+    class_alias('\core_external\external_api', 'external_api_alias_dashboard');
+} else {
+    class_alias('external_api', 'external_api_alias_dashboard');
+}
 require_once($CFG->dirroot.'/webservice/lib.php');
 require_once($CFG->dirroot.'/local/wsmanager/locallib.php');
 
-use core_external\external_api;
+use external_api_alias_dashboard as external_api;
 use html_table;
 use html_table_cell;
 use html_table_row;
@@ -45,7 +53,7 @@ use templatable;
 use webservice;
 
 class dashboard implements renderable, templatable {
-    public function export_for_template(renderer_base $output): array {
+    public function export_for_template(renderer_base $output) {
         $generalerrors = local_wsmanager::get_general_errors();
         return [
             'general_errors' => $generalerrors,
@@ -61,7 +69,7 @@ class dashboard implements renderable, templatable {
         ];
     }
 
-    protected function overview(renderer_base $output): string {
+    protected function overview(renderer_base $output) {
         global $CFG;
         $table = new html_table();
         $table->head = [
@@ -106,7 +114,7 @@ class dashboard implements renderable, templatable {
                     'desc' => $protocoldata['title'].'&nbsp;'.
                         $output->help_icon($protocol.'protocol', 'local_wsmanager').
                         ($protocol == local_wsmanager::PROTOCOL_DEFAULT ? '<br />'.html_writer::tag('em',
-                                get_string('recommended')) : '').'<br />'.
+                                get_string('recommended', 'local_wsmanager')) : '').'<br />'.
                         html_writer::tag('small', html_writer::link(new moodle_url('/'.
                             $CFG->admin.'/settings.php', ['section' => 'webserviceprotocols']),
                             get_string('settings'), ['title' => get_string('settings')])),
@@ -157,7 +165,7 @@ class dashboard implements renderable, templatable {
         return html_writer::table($table);
     }
 
-    protected function mobile_app(renderer_base $output): string {
+    protected function mobile_app(renderer_base $output) {
         global $CFG;
         $table = new html_table();
         $table->head = [
@@ -196,7 +204,7 @@ class dashboard implements renderable, templatable {
         return html_writer::table($table);
     }
 
-    protected function testing(renderer_base $output): string {
+    protected function testing(renderer_base $output) {
         global $CFG;
         $table = new html_table();
         $table->head = [
@@ -220,7 +228,7 @@ class dashboard implements renderable, templatable {
         return html_writer::table($table);
     }
 
-    public static function webservice_test_dashboard_table_output(): string {
+    public static function webservice_test_dashboard_table_output() {
         global $OUTPUT;
         $context = [
             'table1' => '',
@@ -239,7 +247,7 @@ class dashboard implements renderable, templatable {
         return $OUTPUT->render_from_template('local_wsmanager/test_webservice_function_table', $context);
     }
 
-    public static function test_webservice_function_table1(html_table $table): string {
+    public static function test_webservice_function_table1(html_table $table) {
         $table->data[] = [
             'name' => '',
             'value' => html_writer::link('javascript:;',
@@ -254,7 +262,7 @@ class dashboard implements renderable, templatable {
         return html_writer::table($table);
     }
 
-    public static function test_webservice_function_table2(html_table $table, stdClass $testwebservice): string {
+    public static function test_webservice_function_table2(html_table $table, stdClass $testwebservice) {
         global $CFG, $OUTPUT;
         $functioninfo = external_api::external_function_info(local_wsmanager::WS_TEST_FUNCTION);
         $functionmethod = local_wsmanager::function_method(local_wsmanager::WS_TEST_FUNCTION, $functioninfo);
@@ -336,7 +344,7 @@ class dashboard implements renderable, templatable {
         return html_writer::table($table);
     }
 
-    protected function documentation(renderer_base $output): string {
+    protected function documentation(renderer_base $output) {
         $table = new html_table();
         $table->head = [
             'name' => get_string('name'),
@@ -369,7 +377,7 @@ class dashboard implements renderable, templatable {
                 'url' => 'https://docs.moodle.org/dev/Webservice_protocols',
             ],
             [
-                'name' => get_string('mobileapp', 'tool_mobile'),
+                'name' => get_string('mobileapp', 'local_wsmanager'),
                 'url' => get_docs_url('Mobile_web_services'),
             ],
             [
@@ -389,12 +397,12 @@ class dashboard implements renderable, templatable {
             $table->data[] = [
                 'name' => $item['name'],
                 'url' => html_writer::link((new moodle_url($item['url']))->out(),
-                    ($item['url_title'] ?? $item['name']).' '.
-                    $output->pix_icon('i/externallink', get_string('opensinnewwindow'), 'moodle',
+                    (isset($item['url_title']) ? $item['url_title'] : $item['name']).' '.
+                    $output->pix_icon('i/externallink', get_string('opensinnewwindow', 'local_wsmanager'), 'moodle',
                         ['class' => 'fa fa-externallink fa-fw']),
                     [
                         'target' => '_blank',
-                        'title' => $item['url_title'] ?? $item['name'],
+                        'title' => isset($item['url_title']) ? $item['url_title'] : $item['name'],
                     ]),
             ];
         }

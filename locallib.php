@@ -29,13 +29,11 @@ if (!class_exists('\core_external\external_api') && !class_exists('external_api'
 }
 if (class_exists('\core_external\external_api')) {
     class_alias('\core_external\external_api', 'external_api_alias_locallib');
-    class_alias('\core_external\external_function_parameters', 'external_function_parameters_alias_locallib');
     class_alias('\core_external\external_value', 'external_value_alias_locallib');
     class_alias('\core_external\external_single_structure', 'external_single_structure_alias_locallib');
     class_alias('\core_external\external_multiple_structure', 'external_multiple_structure_alias_locallib');
 } else {
     class_alias('external_api', 'external_api_alias_locallib');
-    class_alias('external_function_parameters', 'external_function_parameters_alias_locallib');
     class_alias('external_value', 'external_value_alias_locallib');
     class_alias('external_single_structure', 'external_single_structure_alias_locallib');
     class_alias('external_multiple_structure', 'external_multiple_structure_alias_locallib');
@@ -43,6 +41,10 @@ if (class_exists('\core_external\external_api')) {
 
 use core\event\webservice_service_created;
 use core\event\webservice_token_created;
+use external_api_alias_locallib as external_api;
+use external_multiple_structure_alias_locallib as external_multiple_structure;
+use external_single_structure_alias_locallib as external_single_structure;
+use external_value_alias_locallib as external_value;
 use local_wsmanager\check\result;
 
 class local_wsmanager {
@@ -77,7 +79,11 @@ class local_wsmanager {
     }
 
     /**
-     * Export moodle strings to Javascript
+     * Exports required Moodle language strings to JavaScript for use in the local_wsmanager plugin's AMD modules.
+     *
+     * This method registers multiple string identifiers from various Moodle components
+     * (admin, moodle, webservice, local_wsmanager) so they are available to JavaScript code.
+     * It should be called before outputting any JavaScript that depends on these strings.
      *
      * @return void
      */
@@ -117,10 +123,14 @@ class local_wsmanager {
     }
 
     /**
-     * Services by type internal|external (custom)
+     * Categorizes web services as 'internal' or 'external' (custom) based on their type.
      *
-     * @param  array  $services  Given services
-     * @return array
+     * Iterates through the provided array of service objects and sorts them into
+     * 'internal' or 'external' groups, using their IDs as array keys. The classification
+     * is determined by the static is_internal() method.
+     *
+     * @param  array  $services  Array of web service objects to categorize.
+     * @return array           Associative array with 'internal' and 'external' keys, each containing arrays of services.
      */
     public static function get_services_by_type($services) {
         $ret = [];
@@ -270,7 +280,7 @@ class local_wsmanager {
     public static function webservice_dashboard_mobile_info_output() {
         global $CFG, $OUTPUT;
         if ($CFG->enablemobilewebservice && ($CFG->debugdisplay || defined('WARN_DISPLAY_ERRORS_ENABLED'))) {
-            return $OUTPUT->box(get_string('displayerrorswarning', 'tool_mobile').' '.
+            return $OUTPUT->box(get_string('displayerrorswarning_mobileapp', 'local_wsmanager').' '.
                 html_writer::link(new moodle_url('/'.$CFG->admin.'/settings.php', ['section' => 'debugging'],
                     'admin-debugdisplay'), get_string('disable'), ['title' => get_string('disable')]),
                 'generalbox alert alert-warning');
@@ -288,18 +298,45 @@ class local_wsmanager {
     public static function webservice_protocol_status_output($protocol, $activeprotocols) {
         global $CFG, $OUTPUT;
         if (empty($CFG->enablewebservices)) {
-            return $OUTPUT->check_result(new result(result::ERROR, null));
+            return self::check_result(new result(result::ERROR, null));
         } else {
             if (empty($CFG->webserviceprotocols)) {
-                return $OUTPUT->check_result(new result(result::ERROR, null));
+                return self::check_result(new result(result::ERROR, null));
             } else {
                 if (array_key_exists($protocol, $activeprotocols)) {
-                    return $OUTPUT->check_result(new result(result::ENABLED, null));
+                    return self::check_result(new result(result::ENABLED, null));
                 } else {
-                    return $OUTPUT->check_result(new result(result::DISABLED, null));
+                    return self::check_result(new result(result::DISABLED, null));
                 }
             }
         }
+    }
+
+    public static function check_result(result $result) {
+        $status = $result->get_status();
+        $message = $result->get_summary();
+
+        switch ($status) {
+            case result::ENABLED:
+            case result::OK:
+                $class = 'label label-success';
+                $text = $message ?: get_string('enabled', 'local_wsmanager');
+                break;
+            case result::DISABLED:
+            case result::ERROR:
+                $class = 'label label-danger';
+                $text = $message ?: get_string('disabled', 'local_wsmanager');
+                break;
+            case result::WARNING:
+                $class = 'label label-warning';
+                $text = $message ?: get_string('warning', 'core');
+                break;
+            default:
+                $class = 'label label-default';
+                $text = $message ?: get_string('unknown', 'core');
+        }
+
+        return html_writer::span($text, $class);
     }
 
     /**
@@ -667,7 +704,7 @@ class local_wsmanager {
      * @throws coding_exception
      */
     public static function function_info($functionname) {
-        return external_api_alias_locallib::external_function_info($functionname);
+        return external_api::external_function_info($functionname);
     }
 
     /**
@@ -924,7 +961,7 @@ class local_wsmanager {
      * @return void
      */
     public static function function_params_data_recursive($paramdata, $key, &$keys, &$ret, &$i, $value = null, &$parent = null) {
-        if ($paramdata instanceof external_multiple_structure_alias_locallib) {
+        if ($paramdata instanceof external_multiple_structure) {
             $parent = get_class($paramdata);
             if (!empty($paramdata->content)) {
                 if (!empty($keys)) {
@@ -939,8 +976,9 @@ class local_wsmanager {
                 self::function_params_data_recursive($paramdata->content, $key, $keys, $ret, $i, $value, $parent);
             }
         }
-        if ($paramdata instanceof external_single_structure_alias_locallib) {
-            if (!in_array($parent, ['core_external\external_multiple_structure']) || empty($parent)) {
+        if ($paramdata instanceof external_single_structure) {
+            if (!in_array($parent, ['core_external\external_multiple_structure', 'external_multiple_structure']) ||
+                empty($parent)) {
                 $keys[] = $key;
             }
             $parent = get_class($paramdata);
@@ -951,10 +989,10 @@ class local_wsmanager {
                 }
             }
         }
-        if ($paramdata instanceof external_value_alias_locallib) {
+        if ($paramdata instanceof external_value) {
             if (!empty($keys)) {
                 $keys = array_values($keys);
-                if ($parent == 'core_external\external_multiple_structure') {
+                if (in_array($parent, ['core_external\external_multiple_structure', 'external_multiple_structure'])) {
                     $lastkeyindex = count($keys) - 1;
                     $lastkey = $keys[$lastkeyindex];
                     if (is_int($lastkey)) {
@@ -1030,10 +1068,13 @@ class local_wsmanager {
     }
 
     /**
-     * Detect error in webservice response
+     * Detects and returns error messages from a webservice response.
      *
-     * @param  string  $response
-     * @return string|false
+     * Checks if the response is empty or contains a JSON-encoded exception. If an error is found,
+     * returns the corresponding error message; otherwise, returns false.
+     *
+     * @param  string  $response  The webservice response string to check.
+     * @return string|false     The error message if detected, or false if no error is found.
      */
     public static function response_error($response) {
         if (empty($response)) {
@@ -1061,7 +1102,7 @@ class local_wsmanager {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public static function external_function_handle_output(string $functionname, int $webserviceid) {
+    public static function external_function_handle_output($functionname, $webserviceid) {
         global $CFG, $OUTPUT;
         require_once($CFG->dirroot.'/webservice/lib.php');
         $ret = '';
@@ -1129,7 +1170,7 @@ class local_wsmanager {
                                 'selected' => $method == self::METHOD_POST,
                             ],
                         ],
-                    ]).get_string('recommended').': '.html_writer::tag('code', core_text::strtoupper($method)),
+                    ]).get_string('recommended', 'local_wsmanager').': '.html_writer::tag('code', core_text::strtoupper($method)),
                     'local_wsmanager_external_function_handle_select', [
                         'id' => 'local_wsmanager_external_function_handle_method_'.$webserviceid.'_'.$functionname,
                         'data-webserviceid' => $webserviceid,
@@ -1217,7 +1258,7 @@ class local_wsmanager {
      * @return html_table
      * @throws coding_exception
      */
-    public static function make_table(bool $head = true, string $size1 = '30%', string $size2 = '70%') {
+    public static function make_table($head = true, $size1 = '30%', $size2 = '70%') {
         $table = new html_table();
         $table->head = [
             'name' => $head ? get_string('name') : null,
@@ -1236,7 +1277,7 @@ class local_wsmanager {
      * @param  int  $webserviceid  Webservice id
      * @return string
      */
-    public static function tokens_by_webserviceid_output(int $webserviceid): string {
+    public static function tokens_by_webserviceid_output(int $webserviceid) {
         global $OUTPUT;
         return $OUTPUT->render_from_template('core_admin/setting_configselect', [
             'options' => call_user_func(function() use ($webserviceid) {
@@ -1262,10 +1303,10 @@ class local_wsmanager {
      * @throws coding_exception
      */
     public static function function_params_output(
-        int $webserviceid, string $functionname, bool $head = true,
-        ?array $params = null
-    ): string {
-        $params = $params ?: self::function_params_data_handle($functionname);
+        $webserviceid, $functionname, $head = true,
+        $params = null
+    ) {
+        $params = $params ? $params : self::function_params_data_handle($functionname);
         if ($params) {
             $table = self::make_table($head);
             foreach ($params as $key => $value) {
@@ -1287,9 +1328,9 @@ class local_wsmanager {
      * @throws coding_exception
      */
     public static function function_param_output(
-        string $paramkey, array $paramdata, int $webserviceid,
-        string $functionname
-    ): array {
+        $paramkey, $paramdata, $webserviceid,
+        $functionname
+    ) {
         global $OUTPUT;
         if (!in_array($paramkey, self::EXCLUDE_PARAMS)) {
             return [
@@ -1312,7 +1353,7 @@ class local_wsmanager {
      * @param  array  $param
      * @return string
      */
-    public static function webservice_function_param_desc(array $param): string {
+    public static function webservice_function_param_desc($param) {
         global $OUTPUT;
         $context = [
             'desc' => '',
@@ -1352,12 +1393,12 @@ class local_wsmanager {
      * @throws coding_exception
      */
     public static function webservice_function_param_value(
-        array $paramdata,
-        int $webserviceid,
-        string $functionname,
-        string $paramkey,
-        int $rows = 2
-    ): string {
+        $paramdata,
+        $webserviceid,
+        $functionname,
+        $paramkey,
+        $rows = 2
+    ) {
         global $OUTPUT;
         if (!empty($paramdata['type'])) {
             $name = self::webservice_function_param_id($webserviceid, $functionname, $paramkey);
@@ -1414,7 +1455,7 @@ class local_wsmanager {
      * @param  string  $param
      * @return string
      */
-    public static function webservice_function_param_id(int $webserviceid, string $functionname, string $param): string {
+    public static function webservice_function_param_id(int $webserviceid, string $functionname, string $param) {
         return 'local_wsmanager_ws_fn_param_'.$webserviceid.'_'.$functionname.'_'.$param;
     }
 
@@ -1431,8 +1472,8 @@ class local_wsmanager {
      * @return array
      */
     public static function request_info(
-        int $webserviceid, string $functionname, ?array $params = null, string $method = self::METHOD_GET,
-        string $protocol = self::PROTOCOL_REST, string $restformat = self::DEFAULT_REST_RESPONSE_FORMAT, ?string $token = null
+        $webserviceid, $functionname, $params = null, $method = self::METHOD_GET,
+        $protocol = self::PROTOCOL_REST, $restformat = self::DEFAULT_REST_RESPONSE_FORMAT, $token = null
     ) {
         $requestdata = self::request_data($webserviceid, $functionname, $token, $params, $protocol, $restformat);
         return [

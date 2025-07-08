@@ -24,7 +24,16 @@
 
 namespace local_wsmanager;
 
-use external_api;
+if (!class_exists('\core_external\external_api') && !class_exists('external_api')) {
+    require_once($CFG->libdir.'/externallib.php');
+}
+if (class_exists('\core_external\external_api')) {
+    class_alias('\core_external\external_api', 'external_api_alias_ff');
+} else {
+    class_alias('external_api', 'external_api_alias_ff');
+}
+
+use external_api_alias_ff as external_api;
 use external_service_functions_form;
 use webservice;
 

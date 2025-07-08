@@ -62,7 +62,10 @@ class local_wsmanager_dashboard_setting extends admin_setting {
     }
 
     public function output_html($data, $query = '') {
-        global $CFG, $OUTPUT;
+        global $CFG, $OUTPUT, $PAGE;
+        require_once $CFG->dirroot.'/local/wsmanager/classes/output/renderer.php';
+        $op = $PAGE->get_renderer('local_wsmanager');
+        return $op->output_dashboard_widget();
         require_once($CFG->dirroot.'/local/wsmanager/classes/output/dashboard.php');
         $renderable = new dashboard();
         return $OUTPUT->render($renderable);

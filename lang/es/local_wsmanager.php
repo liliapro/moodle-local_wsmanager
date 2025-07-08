@@ -52,6 +52,9 @@ $string['restprotocol_help'] =
 $string['soapprotocol'] = 'Protocolo SOAP';
 $string['soapprotocol_help'] =
     '<strong>El servidor SOAP de Moodle está basado en el servidor SOAP de Zend (que a su vez está basado en el servidor SOAP de PHP). Zend publica un <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">Cliente SOAP de Zend</a>. Devuelve valores <code>XML</code></strong><br />SOAP (anteriormente acrónimo de Simple Object Access Protocol) es una especificación de protocolo de mensajería para intercambiar información estructurada en la implementación de servicios web. Utiliza XML Information Set para su formato de mensaje y se basa en protocolos de capa de aplicación, más frecuentemente el Protocolo de Transferencia de Hipertexto (HTTP).';
+$string['xmlrpcprotocol'] = 'Protocolo XML-RPC';
+$string['xmlrpcprotocol_help'] =
+    '<strong>El servidor XML-RPC de Moodle maneja llamadas a procedimientos remotos a través de HTTP utilizando XML para codificar llamadas y respuestas. Devuelve valores en formato <code>XML</code></strong><br />XML-RPC (XML Remote Procedure Call) es un protocolo de llamada a procedimiento remoto que utiliza XML para codificar sus llamadas y HTTP como mecanismo de transporte. XML-RPC está diseñado para ser lo más simple posible, permitiendo al mismo tiempo transmitir, procesar y devolver estructuras de datos complejas.';
 $string['webservicesready'] = 'Los Servicios Web están listos para usar';
 
 $string['statusenabled'] = 'Activado';

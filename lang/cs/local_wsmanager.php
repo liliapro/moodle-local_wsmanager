@@ -52,6 +52,9 @@ $string['restprotocol_help'] =
 $string['soapprotocol'] = 'SOAP protokol';
 $string['soapprotocol_help'] =
     '<strong>Moodle SOAP server je založen na Zend SOAP serveru (který je založen na PHP SOAP serveru). Zend zveřejňuje <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">Zend SOAP klienta</a>. Vrací hodnoty ve formátu <code>XML</code></strong><br />SOAP (původně zkratka pro Simple Object Access Protocol) je specifikace komunikačního protokolu pro výměnu strukturovaných informací při implementaci webových služeb. Používá XML Information Set pro svůj formát zpráv a spoléhá na aplikační vrstvy protokolů, nejčastěji Hypertext Transfer Protocol (HTTP).';
+$string['xmlrpcprotocol'] = 'XML-RPC protokol';
+$string['xmlrpcprotocol_help'] =
+    '<strong>Moodle XML-RPC server zpracovává vzdálená volání procedur přes HTTP pomocí XML pro kódování volání a odpovědí. Vrací hodnoty ve formátu <code>XML</code></strong><br />XML-RPC (XML Remote Procedure Call) je protokol vzdáleného volání procedur, který používá XML pro kódování svých volání a HTTP jako transportní mechanismus. XML-RPC je navržen tak, aby byl co nejjednodušší, přičemž umožňuje přenos, zpracování a vrácení složitých datových struktur.';
 $string['webservicesready'] = 'Webové služby jsou připraveny';
 
 $string['statusenabled'] = 'Povoleno';

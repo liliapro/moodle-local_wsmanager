@@ -52,6 +52,9 @@ $string['restprotocol_help'] =
 $string['soapprotocol'] = 'SOAP 프로토콜';
 $string['soapprotocol_help'] =
     '<strong>Moodle의 SOAP 서버는 Zend SOAP 서버(PHP SOAP 서버 기반)를 기반으로 합니다. Zend는 <a href="https://docs.zendframework.com/zend-soap/client/" target="_blank">Zend SOAP 클라이언트</a>를 게시했습니다. <code>XML</code> 값을 반환합니다.</strong><br />SOAP(원래 Simple Object Access Protocol의 약어)는 웹 서비스 구현에서 구조화된 정보를 교환하기 위한 메시징 프로토콜 사양입니다. 메시지 형식으로 XML 정보 집합을 사용하며 응용 프로그램 계층 프로토콜(가장 일반적으로 하이퍼텍스트 전송 프로토콜(HTTP))에 의존합니다.';
+$string['xmlrpcprotocol'] = 'XML-RPC 프로토콜';
+$string['xmlrpcprotocol_help'] =
+    '<strong>Moodle XML-RPC 서버는 HTTP를 통해 원격 프로시저 호출을 처리하며, XML을 사용하여 호출과 응답을 인코딩합니다. <code>XML</code> 형식으로 값을 반환합니다</strong><br />XML-RPC(XML Remote Procedure Call)는 호출을 인코딩하기 위해 XML을 사용하고 전송 메커니즘으로 HTTP를 사용하는 원격 프로시저 호출 프로토콜입니다. XML-RPC는 가능한 한 간단하게 설계되었으며, 복잡한 데이터 구조의 전송, 처리 및 반환을 허용합니다.';
 $string['webservicesready'] = '웹 서비스가 준비되었습니다';
 
 $string['statusenabled'] = '활성화됨';
